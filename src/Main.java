@@ -1,57 +1,221 @@
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        // PKW-Objekt pkw1 erstellen
-        PKW pkw1 = new PKW(10000, 50, 2020, "Rot", 5, 500);
-        System.out.println("PKW erstellt");
-        System.out.println("Kilometerstand: " + pkw1.getKilometerstand());
-        System.out.println("Tankinhalt: " + pkw1.getTankinhalt() + "L");
-        System.out.println("Baujahr: " + pkw1.getBaujahr());
-        System.out.println("Farbe: " + pkw1.getFarbe());
-        System.out.println("Sitze: " + pkw1.getSitze());
-        System.out.println("Kofferraumvolumen: " + pkw1.getKofferraumvolumen());
+        Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
+        List<Fahrzeug> fahrzeuge = new ArrayList<>();
 
-        pkw1.fahren();
-        pkw1.tanken();
-        System.out.println("PKW nach Fahrt und Tanken: Kilometerstand = " + pkw1.getKilometerstand() + ", Tankinhalt = " + pkw1.getTankinhalt() + "L");
+        while (!exit) {
+            int menuAuswahl = zeigeHauptMenu(scanner);
 
-        // LKW-Objekt lkw1 erstellen
-        LKW lkw1 = new LKW(50000, 200, 2015, "Blau", 8000, 4);
-        System.out.println("LKW erstellt");
-        System.out.println("Kilometerstand: " + lkw1.getKilometerstand());
-        System.out.println("Tankinhalt: " + lkw1.getTankinhalt() + "L");
-        System.out.println("Baujahr: " + lkw1.getBaujahr());
-        System.out.println("Farbe: " + lkw1.getFarbe());
-        System.out.println("Ladegewicht: " + lkw1.getLadegewicht());
-        System.out.println("Achsen: " + lkw1.getAchsen());
+            switch (menuAuswahl) {
+                case 1:
+                    fahrzeuge.add(erstellePKW(scanner));
+                    break;
+                case 2:
+                    fahrzeuge.add(erstelleLKW(scanner));
+                    break;
+                case 3:
+                    fahrzeuge.add(erstelleMotorrad(scanner));
+                    break;
+                case 4:
+                    fahrzeuge.add(erstelleFahrrad(scanner));
+                    break;
+                case 5:
+                    if (fahrzeuge.isEmpty()) {
+                        System.out.println("Es sind keine Fahrzeuge vorhanden.");
+                    } else {
+                        verwalteFahrzeugMenu(scanner, fahrzeuge);
+                    }
+                    break;
+                case 6:
+                    exit = true;
+                    System.out.println("Programm wird beendet.");
+                    break;
+                default:
+                    System.out.println("Ungültige Eingabe. Bitte versuchen Sie es erneut.");
+            }
+        }
+        scanner.close();
+    }
 
-        lkw1.fahren();
-        lkw1.tanken();
-        System.out.println("LKW nach Fahrt und Tanken: Kilometerstand = " + lkw1.getKilometerstand() + ", Tankinhalt = " + lkw1.getTankinhalt() + "L");
+    // Zeigt das Hauptmenü an und gibt die Auswahl zurück
+    private static int zeigeHauptMenu(Scanner scanner) {
+        System.out.println("\n--- Fahrzeugverwaltung ---");
+        System.out.println("1. PKW anlegen");
+        System.out.println("2. LKW anlegen");
+        System.out.println("3. Motorrad anlegen");
+        System.out.println("4. Fahrrad anlegen");
+        System.out.println("5. Fahrzeug verwalten");
+        System.out.println("6. Programm beenden");
+        System.out.print("Bitte wählen Sie eine Option: ");
+        return getIntValue(scanner);
+    }
 
-        // Motorrad-Objekt motorrad1 erstellen
-        Motorrad motorrad1 = new Motorrad(15000, 15, 2018, "Schwarz", 600, 2);
-        System.out.println("Motorrad erstellt");
-        System.out.println("Kilometerstand: " + motorrad1.getKilometerstand());
-        System.out.println("Tankinhalt: " + motorrad1.getTankinhalt() + "L");
-        System.out.println("Baujahr: " + motorrad1.getBaujahr());
-        System.out.println("Farbe: " + motorrad1.getFarbe());
-        System.out.println("Hubraum: " + motorrad1.getHubraum());
-        System.out.println("Anzahl Helmhalterungen: " + motorrad1.getAnzahlHelmhalterungen());
+    // Erstellt ein PKW-Objekt basierend auf Benutzereingaben
+    private static PKW erstellePKW(Scanner scanner) {
+        System.out.println("\n--- PKW anlegen ---");
+        return new PKW(
+                getIntInput("Kilometerstand: ", scanner),
+                getFloatInput("Tankinhalt (in Litern): ", scanner),
+                getFloatInput("Maximale Tankkapazität (in Litern): ", scanner),
+                getIntInput("Baujahr: ", scanner),
+                getStringInput("Farbe: ", scanner),
+                getIntInput("Anzahl der Sitze: ", scanner),
+                getIntInput("Kofferraumvolumen (in Litern): ", scanner)
+        );
+    }
 
-        motorrad1.fahren();
-        motorrad1.tanken();
-        System.out.println("Motorrad nach Fahrt und Tanken: Kilometerstand = " + motorrad1.getKilometerstand() + ", Tankinhalt = " + motorrad1.getTankinhalt() + "L");
+    // Erstellt ein LKW-Objekt basierend auf Benutzereingaben
+    private static LKW erstelleLKW(Scanner scanner) {
+        System.out.println("\n--- LKW anlegen ---");
+        return new LKW(
+                getIntInput("Kilometerstand: ", scanner),
+                getFloatInput("Tankinhalt (in Litern): ", scanner),
+                getFloatInput("Maximale Tankkapazität (in Litern): ", scanner),
+                getIntInput("Baujahr: ", scanner),
+                getStringInput("Farbe: ", scanner),
+                getFloatInput("Ladegewicht (in kg): ", scanner),
+                getIntInput("Anzahl der Achsen: ", scanner)
+        );
+    }
 
-        // Fahrrad-Objekt fahrrad1 erstellen
-        Fahrrad fahrrad1 = new Fahrrad(500, 2021, "Grün", "Mountainbike", 21);
-        System.out.println("Fahrrad erstellt");
-        System.out.println("Kilometerstand: " + fahrrad1.getKilometerstand());
-        System.out.println("Baujahr: " + fahrrad1.getBaujahr());
-        System.out.println("Farbe: " + fahrrad1.getFarbe());
-        System.out.println("Art: " + fahrrad1.getArt());
-        System.out.println("Anzahl Gänge: " + fahrrad1.getAnzahlGaenge());
+    // Erstellt ein Motorrad-Objekt basierend auf Benutzereingaben
+    private static Motorrad erstelleMotorrad(Scanner scanner) {
+        System.out.println("\n--- Motorrad anlegen ---");
+        return new Motorrad(
+                getIntInput("Kilometerstand: ", scanner),
+                getFloatInput("Tankinhalt (in Litern): ", scanner),
+                getFloatInput("Maximale Tankkapazität (in Litern): ", scanner),
+                getIntInput("Baujahr: ", scanner),
+                getStringInput("Farbe: ", scanner),
+                getIntInput("Hubraum (in ccm): ", scanner),
+                getIntInput("Anzahl der Helmhalterungen: ", scanner)
+        );
+    }
 
-        fahrrad1.fahren(20);
-        System.out.println("Fahrrad nach Fahrt: Kilometerstand = " + fahrrad1.getKilometerstand());
+    // Erstellt ein Fahrrad-Objekt basierend auf Benutzereingaben
+    private static Fahrrad erstelleFahrrad(Scanner scanner) {
+        System.out.println("\n--- Fahrrad anlegen ---");
+        return new Fahrrad(
+                getIntInput("Kilometerstand: ", scanner),
+                getIntInput("Baujahr: ", scanner),
+                getStringInput("Farbe: ", scanner),
+                getStringInput("Art des Fahrrads: ", scanner),
+                getIntInput("Anzahl der Gänge: ", scanner)
+        );
+    }
+
+    // Zeigt das Menü zur Verwaltung von Fahrzeugen an
+    private static void verwalteFahrzeugMenu(Scanner scanner, List<Fahrzeug> fahrzeuge) {
+        System.out.println("\n--- Fahrzeug auswählen ---");
+        for (int i = 0; i < fahrzeuge.size(); i++) {
+            System.out.println((i + 1) + ". " + fahrzeuge.get(i).toString());
+        }
+        System.out.print("Bitte wählen Sie ein Fahrzeug zum Verwalten: ");
+        int auswahl = getIntValue(scanner) - 1;
+
+        if (auswahl >= 0 && auswahl < fahrzeuge.size()) {
+            verwalteFahrzeug(scanner, fahrzeuge.get(auswahl));
+        } else {
+            System.out.println("Ungültige Auswahl. Bitte erneut versuchen.");
+        }
+    }
+
+    // Verwaltung eines spezifischen Fahrzeugs
+    private static void verwalteFahrzeug(Scanner scanner, Fahrzeug fahrzeug) {
+        boolean zurueck = false;
+
+        while (!zurueck) {
+            System.out.println("\n--- " + fahrzeug.getClass().getSimpleName() + " Verwaltung ---");
+            System.out.println("1. Kilometerstand anzeigen");
+            System.out.println("2. Fahren");
+            if (fahrzeug instanceof MotorisiertesFahrzeug) {
+                System.out.println("3. Tankinhalt anzeigen");
+                System.out.println("4. Tanken");
+            }
+            System.out.println("0. Zurück zum Hauptmenü");
+            System.out.print("Bitte wählen Sie eine Option: ");
+
+            int auswahl = getIntValue(scanner);
+
+            switch (auswahl) {
+                case 1:
+                    System.out.println("Kilometerstand: " + fahrzeug.getKilometerstand() + " km");
+                    break;
+                case 2:
+                    System.out.print("Wie viele Kilometer möchten Sie fahren? ");
+                    int km = getIntValue(scanner);
+                    fahrzeug.fahren(km);
+                    break;
+                case 3:
+                    if (fahrzeug instanceof MotorisiertesFahrzeug) {
+                        MotorisiertesFahrzeug motorisiertesFahrzeug = (MotorisiertesFahrzeug) fahrzeug;
+                        System.out.println("Tankinhalt: " + motorisiertesFahrzeug.getTankinhalt() + " Liter");
+                    } else {
+                        System.out.println("Diese Option ist für dieses Fahrzeug nicht verfügbar.");
+                    }
+                    break;
+                case 4:
+                    if (fahrzeug instanceof MotorisiertesFahrzeug) {
+                        MotorisiertesFahrzeug motorisiertesFahrzeug = (MotorisiertesFahrzeug) fahrzeug;
+                        System.out.print("Wie viele Liter möchten Sie tanken? ");
+                        float liter = getFloatValue(scanner);
+                        motorisiertesFahrzeug.tanken(liter);
+                    } else {
+                        System.out.println("Diese Option ist für dieses Fahrzeug nicht verfügbar.");
+                    }
+                    break;
+                case 0:
+                    zurueck = true;
+                    break;
+                default:
+                    System.out.println("Ungültige Eingabe. Bitte versuchen Sie es erneut.");
+            }
+        }
+    }
+
+    // Eingabehilfsmethoden zum Überprüfen der Eingaben
+    private static int getIntInput(String prompt, Scanner scanner) {
+        System.out.print(prompt);
+        return getIntValue(scanner);
+    }
+
+    private static float getFloatInput(String prompt, Scanner scanner) {
+        System.out.print(prompt);
+        return getFloatValue(scanner);
+    }
+
+    private static String getStringInput(String prompt, Scanner scanner) {
+        System.out.print(prompt);
+        return scanner.next();
+    }
+
+    // Liest eine ganze Zahl ein und behandelt ungültige Eingaben
+    private static int getIntValue(Scanner scanner) {
+        while (true) {
+            try {
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Ungültige Eingabe. Bitte eine ganze Zahl eingeben.");
+                scanner.next(); // Ungültige Eingabe löschen
+            }
+        }
+    }
+
+    // Liest eine Fließkommazahl ein und behandelt ungültige Eingaben
+    private static float getFloatValue(Scanner scanner) {
+        while (true) {
+            try {
+                return scanner.nextFloat();
+            } catch (InputMismatchException e) {
+                System.out.println("Ungültige Eingabe. Bitte eine Dezimalzahl eingeben.");
+                scanner.next(); // Ungültige Eingabe löschen
+            }
+        }
     }
 }
